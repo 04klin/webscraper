@@ -1,16 +1,44 @@
 import requests
 from bs4 import BeautifulSoup
-
-# https://brightdata.com/blog/how-tos/web-scraping-with-python
-# Testing out dependencies first
-
-page = requests.get('https://quotes.toscrape.com')
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
-}
-
-page = requests.get('https://quotes.toscrape.com', headers=headers)
+from flask import Flask
 
 
-soup = BeautifulSoup(page.text, 'html.parser')
+app = Flask(__name__)
+
+@app.route('/')
+def loadHomePage():
+  return {
+    'Homepage' : 'home'
+  }
+
+@app.route('/test')
+def test():
+  response_body = {
+    "name": "Kevin",
+    "greeting" :"Hello!"
+  }
+  return response_body
+
+@app.route('/data')
+def getCountries():
+  # https://brightdata.com/blog/how-tos/web-scraping-with-python
+  # Testing out dependencies first
+
+
+  url = 'https://www.scrapethissite.com/pages/simple/'
+
+
+  page = requests.get(url)
+
+  # Turns the code into something that you can query
+  soup = BeautifulSoup(page.text, 'html.parser')
+
+  soup.find_all('p')[0]
+
+  return soup
+
+  # Check if the soup contains all if the meal times like breakfast lunch and dinner.
+  ## I will have to use flask to operate this backend
+
+if __name__ == '__main__':
+  app.run(debug=True)
