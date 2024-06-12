@@ -11,14 +11,6 @@ def loadHomePage():
     'Homepage' : 'home'
   }
 
-@app.route('/test')
-def test():
-  response_body = {
-    "name": "Kevin",
-    "greeting" :"Hello!"
-  }
-  return response_body
-
 @app.route('/data')
 def getCountries():
   # https://brightdata.com/blog/how-tos/web-scraping-with-python
@@ -33,12 +25,35 @@ def getCountries():
   # Turns the code into something that you can query
   soup = BeautifulSoup(page.text, 'html.parser')
 
-  soup.find_all('p')[0]
+  # Gathers total area and number of countries
+  allAreas = soup.find_all(class_= 'country-area')
+  counter = 0
+  sumLand = 0
+  for a in allAreas:
+    counter += 1
+    sumLand += float(a.text)
+  sumLand = "{:,}".format(sumLand)
+  # Gathers total population
+  totalPop = soup.find_all(class_= 'country-population')
 
-  return soup
+  sumPop = 0
+  for a in totalPop:
+    sumPop += int(a.text)
+  sumPop = "{:,}".format(sumPop)
+
+  # JSON return file
+  ret = {
+    'numOfCountries' : counter,
+    'landSum' : sumLand,
+    'popSum' : sumPop
+  }
+
+  return ret
 
   # Check if the soup contains all if the meal times like breakfast lunch and dinner.
   ## I will have to use flask to operate this backend
+
+
 
 if __name__ == '__main__':
   app.run(debug=True)
